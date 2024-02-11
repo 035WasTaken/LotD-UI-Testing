@@ -1,4 +1,8 @@
-const globalCommands = {
+import { CommandHandler } from "./commandhandler.js";
+import { Argument, GlobalCommands } from "./types/interface/commands.js";
+
+const commandHandler = new CommandHandler({});
+const globalCommands: GlobalCommands = {
 	"help": {
 		"description": "Displays a list of available commands, or details about a given command",
 		"arguments": [
@@ -15,7 +19,7 @@ const globalCommands = {
 				usage: "Displays a tutorial on how to use the console",
 			}
 		],
-		"run": function(args) {
+		"run": function(args: any) { //fuck ts
 			if (args.tutorial) {
 				let output = "--The Console for Dummies--\n";
 				output += "The console is a command line interface that allows you to interact with the game.\n"
@@ -44,9 +48,9 @@ const globalCommands = {
 			} else {
 				var command = args.command;
 				if (globalCommands[command]) {
-					return `Displaying info for command '${command}':\nDescription: ${globalCommands[command].description}${renderArgs(globalCommands[command].arguments)}`;
+					return `Displaying info for command '${command}':\nDescription: ${globalCommands[command].description}${commandHandler.renderArgs(globalCommands[command].arguments)}`;
 				} else {
-					return `Command '${command}' not found\n${renderArgs(this.arguments)}`;
+					return `Command '${command}' not found\n${commandHandler.renderArgs(this.arguments)}`;
 				}
 			}
 		}
@@ -67,7 +71,7 @@ const globalCommands = {
 				usage: "The second number to be added together"
 			}
 		],
-		"run": function(args) {
+		"run": function(args: any) {
 			return `What makes you think I'm going to add ${args.num1} and ${args.num2} for you? Go do it yourself, you lazy bum!`;
 		}
 	}
