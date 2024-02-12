@@ -1,8 +1,9 @@
+// @ts-nocheck
+
 import { globalCommands } from "./src/js/commands.js";
 import { Command, Argument } from "./src/js/types/interface/commands.js";
-import { CommandHandler } from "./src/js/commandhandler.js";
+import { CommandHandler } from "./src/js/commandHandler.js";
 import { CommandHistory } from "./src/js/types/interface/console.js"
-
 /*function parseArgs(command, args) {
 	console.log(args);
 	if (!checkRequiredArgsPresent(command, args)) {

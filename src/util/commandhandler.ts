@@ -1,19 +1,12 @@
-import { Argument, Command } from "./types/interface/commands";
-
-type ParsedArgs = {
-    [key: string]: boolean | number | string;
-};
-  
-type ErrorResult = string;
-  
-type ParseResult = ParsedArgs | ErrorResult;
+import { Argument, Command } from "../types/interface/commands";
+import { ParseResult } from "../types/console";
 
 export class CommandHandler {
     terminal;
     /**
      * @param {Object} terminal - The terminal object to use
      */
-    constructor(terminal: any) {
+    constructor(terminal: any = {}) {
         this.terminal = terminal;
     }
 

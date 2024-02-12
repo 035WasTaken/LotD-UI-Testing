@@ -1,0 +1,7 @@
+The mechanics really have nothing to do with story but. I'm putting the ideas here anyways.
+
+
+
+Add "radar ping" or similar command to terminal in order to actually ping the radar. Maybe later on you can obtain an upgrade to do it continuously ?
+It might be better to just have that be a separate command, and just have it be a bit less accurate. With the idea being that it might be automated detection
+instead of manual from the main character.

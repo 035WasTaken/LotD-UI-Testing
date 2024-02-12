@@ -1,7 +1,7 @@
-import { CommandHandler } from "./commandhandler.js";
-import { Argument, GlobalCommands } from "./types/interface/commands.js";
+import { CommandHandler } from "./commandhandler";
+import { Argument, GlobalCommands } from "../types/interface/commands.js";
 
-const commandHandler = new CommandHandler({});
+const commandHandler = new CommandHandler();
 const globalCommands: GlobalCommands = {
 	"help": {
 		"description": "Displays a list of available commands, or details about a given command",
@@ -41,8 +41,8 @@ const globalCommands: GlobalCommands = {
 				output += "Run 'help --tutorial' for a tutorial on how to use the console\n\n";
 				output += "The following commands are available:\n"
 				for (var i = 0; i < commands.length; i++) {
-					console.log(commands[i] + " alskjdhkashdjka");
-					output += `  ${commands[i]}: ${globalCommands[commands[i]].description}\n`;
+					console.log(commands[i] + " a");
+					output += `  ${commands[i]}: ${globalCommands[commands[i]].description}`;
 				}
 				return output;
 			} else {
