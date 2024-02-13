@@ -9,6 +9,21 @@ export class CommandHandler {
     constructor(terminal: any = {}) {
         this.terminal = terminal;
     }
+    /**
+     * @param {number} ms - Number of milliseconds to delay by.
+     * @param {any} value - The value you want returned at the end of the delay.
+     * @returns {any}
+     * @static
+     * 
+     * Delay the execution of a function or method, and then return a given value at the end.
+     */
+    static delayExecutionThenReturn(ms: number, value: any) {
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                resolve(value);
+            }, ms)
+        })
+    }
 
     /**
      * @param {Command} command
