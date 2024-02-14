@@ -81,6 +81,7 @@ export function Console() {
     if (typeof args === "string") {
       let output = args + "\n" + commandHandler.renderArgs(cmd.arguments);
       appendConsoleHistory(output, true);
+      return;
     }
 
     setCanType(false);
