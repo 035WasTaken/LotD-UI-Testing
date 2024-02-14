@@ -8,5 +8,5 @@ export class GameObject {
         this.Name = name;
     }
 
-    public static getObjectByName(name: string) {}
+    public static GetObjectByName(name: string) {}
 }

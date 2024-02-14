@@ -11,7 +11,16 @@ export class GameArea {
         this.height = h;
     }
 
-    public initialize(): Unit[][] {
+    // the fun part is going to be updating this constantly without causing lag
+    // i'll probably initialize this with GameObjects at some point in the future
+    // but i'd like to optimize it before then, because as of right now it takes
+    // ~16ms to execute this as it is. let alone adding more data.
+    /**
+     * @returns Initialized GameArea
+     * @description Sets up GameArea.grid to be used
+     */
+    public Initialize(): Unit[][] {
+        // one way I could potentially optimize this is by removing the `fill(null)` call to remove an iteration
         this.grid = new Array(this.height).fill(null).map((_, y) => {
             const arrX = [];
 
@@ -28,6 +37,12 @@ export class GameArea {
 
         return this.grid;
     }
-}
 
-// this.units = new Array(height).fill(null).map(() => new Array(width).fill({ type: SonarDetectionTypes.None, x: 0, y: 0 }));
+    public Update() {}
+
+    public UpdateCoordinate(coordinateUnit: Unit) {
+        // idk why it formats like this.
+        this.grid[coordinateUnit.y][coordinateUnit.x].type =
+            coordinateUnit.type;
+    }
+}
