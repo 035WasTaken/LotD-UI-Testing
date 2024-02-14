@@ -20,6 +20,6 @@ root.render(
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 
 const ga = new GameArea(1000, 1000);
-const GAME_AREA = ga.detectUnits();
+const GAME_AREA = ga.initialize();
 // @ts-ignore
 document.GAME_AREA = GAME_AREA;
