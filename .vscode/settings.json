@@ -3,5 +3,6 @@
     "commandhandler",
     "consolehandler",
     "TTFB"
-  ]
+  ],
+  "editor.tabSize": 4
 }

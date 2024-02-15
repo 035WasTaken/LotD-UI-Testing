@@ -1,20 +1,20 @@
-import React, { KeyboardEvent, useEffect, useRef, useState } from 'react';
-import { CommandHandler } from './util/commandhandler';
-import { ConsoleHandler } from './util/consolehandler';
-import { globalCommands } from './util/commands';
-import { CommandHistory, ConsoleAnimation } from './types/console';
+import React, { KeyboardEvent, useEffect, useRef, useState } from "react";
+import { CommandHandler } from "../util/commandhandler";
+import { ConsoleHandler } from "../util/consolehandler";
+import { globalCommands } from "../util/commands";
+import { CommandHistory, ConsoleAnimation } from "../types/console";
 
 export function Console() {
     const [canType, setCanType] = useState(true);
     const [consoleLoading, setConsoleLoading] = useState(false);
-    const [consoleHistory, setConsoleHistory] = useState('');
+    const [consoleHistory, setConsoleHistory] = useState("");
     const [consoleAnimation, setConsoleAnimation] =
         useState<ConsoleAnimation | null>(null);
-    const [userInput, setUserInput] = useState('');
+    const [userInput, setUserInput] = useState("");
     const [commandHistory, setCommandHistory] = useState<CommandHistory>({
         commands: [],
         index: -1,
-        saved: '',
+        saved: "",
     });
     const commandHandler = new CommandHandler();
     const consoleHandler = new ConsoleHandler();
@@ -22,7 +22,7 @@ export function Console() {
     const cursor = canType ? (
         <span className="console-cursor">&#9646;</span>
     ) : (
-        ''
+        ""
     );
     const consoleText = canType
         ? `${consoleHistory}\nCONSOLE> ${userInput}`
@@ -47,7 +47,7 @@ export function Console() {
     }
 
     function clearUserInput() {
-        setUserInput('');
+        setUserInput("");
     }
 
     function appendConsoleHistory(
@@ -55,7 +55,7 @@ export function Console() {
         animated = false,
         newLine = true
     ) {
-        let newConsoleText = newLine ? '\n' + text : text;
+        let newConsoleText = newLine ? "\n" + text : text;
 
         if (animated) {
             setConsoleAnimation({
@@ -72,7 +72,7 @@ export function Console() {
     }
 
     async function runCommand(input: string) {
-        const splitCmd = input.split(' ');
+        const splitCmd = input.split(" ");
         const cmd = globalCommands[splitCmd[0]];
 
         if (cmd === undefined) {
@@ -82,15 +82,15 @@ export function Console() {
         }
 
         const args = commandHandler.parseArgs(cmd, splitCmd.slice(1));
-        if (typeof args === 'string') {
-            let output = args + '\n' + commandHandler.renderArgs(cmd.arguments);
+        if (typeof args === "string") {
+            let output = args + "\n" + commandHandler.renderArgs(cmd.arguments);
             appendConsoleHistory(output, true);
             return;
         }
 
         setCanType(false);
         setConsoleLoading(true);
-        let output = (await cmd.run(args)) + '\n';
+        let output = (await cmd.run(args)) + "\n";
         setConsoleLoading(false);
         appendConsoleHistory(output, true);
     }
@@ -111,14 +111,11 @@ export function Console() {
         let index = 0;
         let speed = consoleAnimation.speed;
         let charsPerCycle: number;
-        if (consoleAnimation.speed <= 1) {
-            speed += 10;
+        if (speed <= 1) {
             charsPerCycle = 4;
-        } else if (consoleAnimation.speed <= 5) {
-            speed += 10;
+        } else if (speed <= 5) {
             charsPerCycle = 3;
-        } else if (consoleAnimation.speed <= 10) {
-            speed += 10;
+        } else if (speed <= 10) {
             charsPerCycle = 2;
         } else {
             charsPerCycle = 1;
@@ -140,7 +137,7 @@ export function Console() {
                 setConsoleAnimation(null);
                 return;
             }
-        }, consoleAnimation.speed);
+        }, speed);
     }, [consoleAnimation?.text]);
 
     // Displays animation while the console is loading
@@ -152,8 +149,8 @@ export function Console() {
         // adds a dot each second
         let dots = 1;
         const loading = setInterval(() => {
-            if (dots === 1) appendConsoleHistory('Working.');
-            appendConsoleHistory('.', false, false);
+            if (dots === 1) appendConsoleHistory("Working.");
+            appendConsoleHistory(".", false, false);
             dots++;
         }, 1000);
 

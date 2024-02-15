@@ -1,4 +1,4 @@
-import { Vector2Data } from '../types/interface/game';
+import { Vector2Data } from "../types/interface/game";
 
 export class Vector2 {
     public data: Vector2Data;

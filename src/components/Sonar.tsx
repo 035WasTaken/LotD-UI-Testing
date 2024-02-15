@@ -1,25 +1,25 @@
-import React, { Component, useEffect, useState } from 'react';
-import * as Maths from './util/math';
+import React, { useEffect, useState } from "react";
+import * as Maths from "../util/math";
 
 export function Sonar() {
     const [pings, setPings] = useState<any[]>([]);
     const directions = [
-        'N',
-        'S',
-        'W',
-        'E',
-        'NW',
-        'NE',
-        'SW',
-        'SE',
-        'NNW',
-        'WNW',
-        'NNE',
-        'ENE',
-        'SSW',
-        'WSW',
-        'SSE',
-        'ESE',
+        "N",
+        "S",
+        "W",
+        "E",
+        "NW",
+        "NE",
+        "SW",
+        "SE",
+        "NNW",
+        "WNW",
+        "NNE",
+        "ENE",
+        "SSW",
+        "WSW",
+        "SSE",
+        "ESE",
     ];
 
     function renderPings() {
@@ -47,12 +47,12 @@ export function Sonar() {
     function generatePingType() {
         const randomNumber = Math.random();
         if (randomNumber < 0.5) {
-            return 'terrain';
+            return "terrain";
         }
         if (randomNumber < 0.9) {
-            return 'object';
+            return "object";
         }
-        return 'threat';
+        return "threat";
     }
 
     function removeOldPings() {
@@ -99,9 +99,9 @@ export function Sonar() {
     );
 }
 
-function Ping({ timestamp, text, className = '' }: any) {
+function Ping({ timestamp, text, className = "" }: any) {
     function addLeadingZero(number: number | string) {
-        return number.toString().padStart(2, '0');
+        return number.toString().padStart(2, "0");
     }
 
     const date = new Date(timestamp);

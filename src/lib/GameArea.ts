@@ -1,5 +1,5 @@
-import { Unit } from '../types/interface/game';
-import { SonarDetectionTypes } from '../types/enum/game';
+import { Unit } from "../types/interface/game";
+import { SonarDetectionTypes } from "../types/enum/game";
 
 export class GameArea {
     width: number;
