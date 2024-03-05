@@ -1,13 +1,11 @@
-/// <reference path="index.tsx" />;
-
 import React, { Component, useEffect, useState } from "react";
-import { GameAreaManager } from "./lib/GameAreaManager";
-import { SonarDetectionTypes } from "./types/enum/game";
-import { ms } from "./lib/Misc";
-import * as Maths from "./util/math";
-import { Vector2 } from "./lib/Vector2";
+import { GameAreaManager } from "../lib/GameAreaManager";
+import { SonarDetectionTypes } from "../types/enum/game";
+import { ms } from "../lib/Misc";
+import * as Maths from "../util/math";
+import { Vector2 } from "../lib/Vector2";
 
-import type { Unit, Ping } from "./types/interface/game";
+import type { Unit, Ping } from "../types/interface/game";
 
 const GameArea = GameAreaManager.getInstance();
 

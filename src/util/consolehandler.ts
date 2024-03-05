@@ -58,9 +58,9 @@ export class ConsoleHandler {
 
         console.log(commandHistory);
 
-        return <any>{
+        return {
             newUserInput: newUserInput,
             newCommandHistory: commandHistory,
-        };
+        } as any;
     }
 }
