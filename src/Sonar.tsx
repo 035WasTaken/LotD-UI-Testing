@@ -1,62 +1,45 @@
-import React, { Component, useEffect, useState } from 'react';
-import * as Maths from './util/math';
+/// <reference path="index.tsx" />;
+
+import React, { Component, useEffect, useState } from "react";
+import { GameAreaManager } from "./lib/GameAreaManager";
+import { SonarDetectionTypes } from "./types/enum/game";
+import { ms } from "./lib/Misc";
+import * as Maths from "./util/math";
+import { Vector2 } from "./lib/Vector2";
+
+import type { Unit, Ping } from "./types/interface/game";
+
+const GameArea = GameAreaManager.getInstance();
 
 export function Sonar() {
     const [pings, setPings] = useState<any[]>([]);
-    const directions = [
-        'N',
-        'S',
-        'W',
-        'E',
-        'NW',
-        'NE',
-        'SW',
-        'SE',
-        'NNW',
-        'WNW',
-        'NNE',
-        'ENE',
-        'SSW',
-        'WSW',
-        'SSE',
-        'ESE',
-    ];
 
     function renderPings() {
-        // this is gonna stay as 'any' until i can actually define a GameObject for it
-        let _pings: any[] = [];
+        let _pings: React.ReactNode[] = [];
         pings.forEach((ping: any) => {
-            const type = ping.type[0].toUpperCase() + ping.type.slice(1);
-            const text = `${type} detected ${ping.distance}m ${ping.compass}`;
-            _pings.push(
-                <Ping
-                    key={ping.timestamp}
-                    className={ping.type}
-                    timestamp={ping.timestamp}
-                    text={text}
-                />
-            );
+            const type = ping.type; // int for rn
+            const text = `${type} detected [${ping.distance.toFixed(0)}m] ${Maths.roundToDecimalPlaces(ping.angle, 2)}° at [${ping.coordinate.x}, ${
+                ping.coordinate.y
+            }]`;
+            GameArea.UpdateCoordinate(ping.coordinate);
+            _pings.push(<Ping key={ping.timestamp} className={ping.type.toLowerCase()} timestamp={ping.timestamp} text={text} />);
         });
         return <>{_pings.map((element) => element)}</>;
-    }
-
-    function toDirection(int: number) {
-        return directions[int];
     }
 
     function generatePingType() {
         const randomNumber = Math.random();
         if (randomNumber < 0.5) {
-            return 'terrain';
+            return SonarDetectionTypes.Terrain;
         }
         if (randomNumber < 0.9) {
-            return 'object';
+            return SonarDetectionTypes.Object;
         }
-        return 'threat';
+        return SonarDetectionTypes.Threat;
     }
 
     function removeOldPings() {
-        const maxMs = 60000;
+        const maxMs = ms(60); // how long pings stay on the screen for
         if (pings.length === 0) return;
 
         // we only need to check one at a time because the ones
@@ -70,23 +53,69 @@ export function Sonar() {
 
     function tryCreateNewPing() {
         if (Maths.randomNumberInRange(30, 0) === 0) {
+            const t = generatePingType();
+            const c: Unit = {
+                x: Math.floor(Maths.randomNumberInRange(0, 100)),
+                y: Math.floor(Maths.randomNumberInRange(0, 1000)),
+            };
             const newPing = {
                 timestamp: Date.now(),
-                type: generatePingType(),
-                distance: Math.floor(Maths.randomNumberWithCurve(200, 100)),
-                compass: toDirection(
-                    Maths.randomNumberInRange(directions.length - 1, 0)
-                ),
+                type: getType(t),
+                coordinate: {
+                    type: t,
+                    x: c.x,
+                    y: c.y,
+                },
+                angle: Maths.calcAngleToPosition(new Vector2(c.x, c.y)),
+                // ignore this for a bit
+                distance: GameArea.GetDistanceFromPlayer(c),
             };
             setPings((prevPings: any) => [...prevPings, newPing]);
         }
     }
 
+    /*
+        export enum SonarDetectionTypes {
+            None = 0,
+            Terrain,
+            Object,
+            Threat,
+            Unknown,
+        }
+    */
+
+    function getType(type: SonarDetectionTypes) {
+        let result: String;
+        switch (type) {
+            case 0:
+                result = "None";
+                break;
+            case 1:
+                result = "Terrain";
+                break;
+            case 2:
+                result = "Object";
+                break;
+            case 3:
+                result = "Threat";
+                break;
+            case 4:
+                result = "Unknown";
+                break;
+            default:
+                throw TypeError("type does not exist");
+        }
+
+        return result;
+    }
+
+    // Every 500ms, removes pings older than 1 minute and has a small
+    // chance to generate a new ping
     useEffect(() => {
         const loop = setInterval(() => {
             removeOldPings();
             tryCreateNewPing();
-        }, 500);
+        }, ms(0.5));
 
         return () => clearInterval(loop);
     }, [pings]);
@@ -99,9 +128,9 @@ export function Sonar() {
     );
 }
 
-function Ping({ timestamp, text, className = '' }: any) {
+function Ping({ timestamp, text, className = "" }: any) {
     function addLeadingZero(number: number | string) {
-        return number.toString().padStart(2, '0');
+        return number.toString().padStart(2, "0");
     }
 
     const date = new Date(timestamp);

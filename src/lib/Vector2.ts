@@ -1,31 +1,23 @@
-import { Vector2Data } from '../types/interface/game';
+import { Vector2Data } from "../types/interface/game";
+import { Unit } from "../types/interface/game";
 
 export class Vector2 {
-    public data: Vector2Data;
+    public data: Unit;
 
-    constructor(vec2: Vector2Data) {
-        this.data = vec2;
+    constructor(x: number, y: number) {
+        this.data = { x, y };
     }
 
     public static AddStatic(v1: Vector2, v2: Vector2): Vector2 {
-        return new Vector2({
-            x: v1.data.x + v2.data.x,
-            y: v1.data.y + v2.data.y,
-        });
+        return new Vector2(v1.data.x + v2.data.x, v1.data.y + v2.data.y);
     }
 
     public static SubtractStatic(v1: Vector2, v2: Vector2): Vector2 {
-        return new Vector2({
-            x: v1.data.x - v2.data.x,
-            y: v1.data.y - v2.data.y,
-        });
+        return new Vector2(v1.data.x - v2.data.x, v1.data.y - v2.data.y);
     }
 
     public static MultiplyStatic(v: Vector2, scalar: number): Vector2 {
-        return new Vector2({
-            x: v.data.x * scalar,
-            y: v.data.y * scalar,
-        });
+        return new Vector2(v.data.x * scalar, v.data.y * scalar);
     }
 
     public static LengthStatic(v: Vector2): number {
@@ -37,7 +29,7 @@ export class Vector2 {
         if (length !== 0) {
             return Vector2.MultiplyStatic(v, 1 / length);
         } else {
-            return new Vector2({ x: 0, y: 0 });
+            return new Vector2(0, 0);
         }
     }
 
@@ -46,10 +38,7 @@ export class Vector2 {
     }
 
     public Add(vector: Vector2): Vector2 {
-        return new Vector2({
-            x: this.data.x + vector.data.x,
-            y: this.data.y + vector.data.y,
-        });
+        return new Vector2(this.data.x + vector.data.x, this.data.y + vector.data.y);
     }
 
     public AddData(vector: Vector2Data): Vector2Data {
@@ -60,10 +49,7 @@ export class Vector2 {
     }
 
     public Subtract(vector: Vector2): Vector2 {
-        return new Vector2({
-            x: this.data.x - vector.data.x,
-            y: this.data.y - vector.data.y,
-        });
+        return new Vector2(this.data.x - vector.data.x, this.data.y - vector.data.y);
     }
 
     public SubtractData(vector: Vector2Data) {
@@ -74,10 +60,7 @@ export class Vector2 {
     }
 
     public Multiply(scalar: number): Vector2 {
-        return new Vector2({
-            x: this.data.x * scalar,
-            y: this.data.y * scalar,
-        });
+        return new Vector2(this.data.x * scalar, this.data.y * scalar);
     }
 
     public MultiplyData(scalar: number): Vector2Data {
@@ -96,7 +79,7 @@ export class Vector2 {
         if (length !== 0) {
             return this.Multiply(1 / length);
         } else {
-            return new Vector2({ x: 0, y: 0 });
+            return new Vector2(0, 0);
         }
     }
 

@@ -1,0 +1,9 @@
+{
+    "tabWidth": 4,
+    "useTabs": false,
+    "bracketSpacing": true,
+    "proseWrap": "preserve",
+    "printWidth": 160,
+    "semi": true,
+    "overrides": []
+}
