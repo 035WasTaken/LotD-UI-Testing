@@ -101,7 +101,7 @@ export function Sonar() {
                 result = "Unknown";
                 break;
             default:
-                throw TypeError("type does not exist");
+                throw TypeError("Sonar type does not exist");
         }
 
         return result;
