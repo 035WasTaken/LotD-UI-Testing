@@ -1,5 +1,5 @@
-#Lure of the Deep
+# Lure of the Deep
 Proof of concept + something to just work on for fun
 
-#Goals
+# Goals
 TBD
