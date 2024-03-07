@@ -7,9 +7,9 @@ import { CommandHistory, ConsoleAnimation } from "../types/console";
 export function Console() {
     const [canType, setCanType] = useState(true);
     const [consoleLoading, setConsoleLoading] = useState(false);
+    const [consoleLoadingText, setConsoleLoadingText] = useState<String | null>(null);
     const [consoleHistory, setConsoleHistory] = useState("");
-    const [consoleAnimation, setConsoleAnimation] =
-        useState<ConsoleAnimation | null>(null);
+    const [consoleAnimation, setConsoleAnimation] = useState<ConsoleAnimation | null>(null);
     const [userInput, setUserInput] = useState("");
     const [commandHistory, setCommandHistory] = useState<CommandHistory>({
         commands: [],
@@ -19,28 +19,28 @@ export function Console() {
     const commandHandler = new CommandHandler();
     const consoleHandler = new ConsoleHandler();
     const consoleOutputRef = useRef<HTMLDivElement>(null);
-    const cursor = canType ? (
-        <span className="console-cursor">&#9646;</span>
-    ) : (
-        ""
-    );
-    const consoleText = canType
-        ? `${consoleHistory}\nCONSOLE> ${userInput}`
-        : consoleHistory;
+    const cursor = canType ? <span className="console-cursor">&#9646;</span> : "";
+    
+    function renderConsoleText() {
+        let text = consoleHistory;
+        if (consoleLoadingText != null) {
+            text += "\n" + consoleLoadingText;
+        }
+        if (canType) {
+            text += `\nCONSOLE> ${userInput}`;
+        }
+
+        return text;
+    }
 
     function handleKeyPress(e: KeyboardEvent) {
         if (!canType) return;
 
-        const parsedUserInput = consoleHandler.calcUserInput(
-            userInput,
-            commandHistory,
-            e,
-            () => {
-                clearUserInput();
-                appendConsoleHistory(`CONSOLE> ${userInput}`);
-                runCommand(userInput);
-            }
-        );
+        const parsedUserInput = consoleHandler.calcUserInput(userInput, commandHistory, e, () => {
+            clearUserInput();
+            appendConsoleHistory(`CONSOLE> ${userInput}`);
+            runCommand(userInput);
+        });
         if (!parsedUserInput) return;
         setCommandHistory(parsedUserInput.newCommandHistory);
         setUserInput(parsedUserInput.newUserInput);
@@ -50,11 +50,7 @@ export function Console() {
         setUserInput("");
     }
 
-    function appendConsoleHistory(
-        text: string,
-        animated = false,
-        newLine = true
-    ) {
+    function appendConsoleHistory(text: string, animated = false, newLine = true) {
         let newConsoleText = newLine ? "\n" + text : text;
 
         if (animated) {
@@ -101,7 +97,7 @@ export function Console() {
             const { current } = consoleOutputRef;
             current.scrollTop = current.scrollHeight;
         }
-    }, [consoleHistory, canType]);
+    }, [consoleHistory, canType, consoleLoadingText]);
 
     // Console Animation Handler thingy whatever the fuck
     useEffect(() => {
@@ -142,31 +138,31 @@ export function Console() {
 
     // Displays animation while the console is loading
     useEffect(() => {
+        const loadingChars = ["—", "\\", "|", "/"];
+
         if (!consoleLoading) {
+            setConsoleLoadingText(null);
             return;
         }
 
-        // adds a dot each second
-        let dots = 1;
+        let char = 0;
         const loading = setInterval(() => {
-            if (dots === 1) appendConsoleHistory("Working.");
-            appendConsoleHistory(".", false, false);
-            dots++;
-        }, 1000);
+            setConsoleLoadingText(`Executing command...  ${loadingChars[char]}`);
+            char++;
+
+            if (char >= loadingChars.length) {
+                char = 0;
+            }
+        }, 120);
 
         return () => clearInterval(loading);
     }, [consoleLoading]);
 
     return (
         <div className="console">
-            <div
-                tabIndex={0}
-                className="console-output"
-                ref={consoleOutputRef}
-                onKeyDown={(e) => handleKeyPress(e)}
-            >
+            <div tabIndex={0} className="console-output" ref={consoleOutputRef} onKeyDown={(e) => handleKeyPress(e)}>
                 <pre>
-                    {consoleText}
+                    {renderConsoleText()}
                     {cursor}
                 </pre>
             </div>
