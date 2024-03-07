@@ -1,41 +1,44 @@
 import EventEmitter from "events";
 import { GameArea } from "../lib/GameArea";
 import { GameAreaManager } from "../lib/GameAreaManager";
-import type { Unit } from "../types/interface/game";
+import type { Ping, Unit } from "../types/interface/game";
 import { Vector2 } from "../lib/Vector2";
 import { SonarDetectionTypes } from "../types/enum/game";
+import * as Maths from "../util/math";
 
-export class Sonar extends EventEmitter {
+export class SonarDetector extends EventEmitter {
     private gameArea: GameArea;
-    private lastDetected: Unit[] = [];
+    private lastDetected: Ping[] = [];
     private lastPlayerPosition: Vector2 = new Vector2(0, 0);
 
     constructor(gameArea: GameArea) {
         super();
-        this.gameArea = GameAreaManager.getInstance();
+        this.gameArea = GameAreaManager.GetInstance();
     }
 
-    public TryDetect(radius: number): void {
+    public TryDetect(radius: number): Ping[] {
         // if player has not moved, and there were objects detected in this position previously
         // we emit the "detect" event with those objects so as to avoid unnecessary iteration.
         // if player has not moved and there were no objects detected last time, return nothing.
         // otherwise, continue.
+
+        // uncomment this when we actually implement player movement
         /*if (this.gameArea.playerPosition === this.lastPlayerPosition && this.lastDetected.length > 0) {
             this.emit("detect", this.lastDetected);
-            return;
+            return this.lastDetected;
         } else if (this.gameArea.playerPosition === this.lastPlayerPosition && this.lastDetected.length < 1) {
             console.log("nothing ever");
             return;
         }*/
 
         // this definitely isn't the most efficient method, but it should be fine for our use case
-        const center = [this.gameArea.playerPosition.data.x / 2, this.gameArea.playerPosition.data.y / 2];
-        const [centerX, centerY] = center;
-        const elementsInRadius: Unit[] = [];
+        const playerPos = [this.gameArea.playerPosition.data.x, this.gameArea.playerPosition.data.y];
+        const [playerX, playerY] = playerPos;
+        const elementsInRadius: Ping[] = [];
 
-        for (let i = centerX - radius; i <= centerX + radius; i++) {
-            for (let j = centerY - radius; j <= centerY + radius; j++) {
-                // Check if the current indices are within the bounds of the matrix
+        for (let i = playerX - radius; i <= playerX + radius; i++) {
+            for (let j = playerY - radius; j <= playerY + radius; j++) {
+                // waow,,
                 if (
                     i >= 0 &&
                     i < this.gameArea.grid.length &&
@@ -44,7 +47,23 @@ export class Sonar extends EventEmitter {
                     this.gameArea.grid[i][j].type !== null &&
                     this.gameArea.grid[i][j].type !== SonarDetectionTypes.None
                 ) {
-                    elementsInRadius.push(this.gameArea.grid[i][j]);
+                    const coordinate: Unit = this.gameArea.grid[i][j];
+                    const timestamp: number = Date.now();
+                    const type = this.gameArea.GetCoordinateType(coordinate);
+                    const angle = Maths.calcAngleToPosition(new Vector2(coordinate.x, coordinate.y));
+                    const distance = this.gameArea.GetDistanceFromPlayer(coordinate);
+
+                    console.log(distance);
+
+                    const ping = {
+                        timestamp,
+                        type,
+                        coordinate,
+                        angle,
+                        distance,
+                    };
+
+                    elementsInRadius.push(ping);
                 }
             }
         }
@@ -55,5 +74,9 @@ export class Sonar extends EventEmitter {
         if (elementsInRadius.length > 0) {
             this.emit("detect", elementsInRadius);
         }
+
+        console.log(elementsInRadius);
+
+        return elementsInRadius;
     }
 }

@@ -49,6 +49,33 @@ export class GameArea {
         this.grid[coordinateUnit.y][coordinateUnit.x].type = coordinateUnit.type;
     }
 
+    public GetCoordinateType(coordinate: Unit) {
+        const type = coordinate.type;
+        let result: String;
+
+        switch (type) {
+            case 0:
+                result = "None";
+                break;
+            case 1:
+                result = "Terrain";
+                break;
+            case 2:
+                result = "Object";
+                break;
+            case 3:
+                result = "Threat";
+                break;
+            case 4:
+                result = "Unknown";
+                break;
+            default:
+                throw TypeError("Sonar type does not exist");
+        }
+
+        return result;
+    }
+
     public GetDistanceFromPlayer(coordinate: Unit): number {
         const point1 = this.playerPosition;
         const point2 = new Vector2(coordinate.x, coordinate.y);

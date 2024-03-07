@@ -4,8 +4,9 @@ import ReactDOM from "react-dom/client";
 import App from "./components/App";
 import reportWebVitals from "./reportWebVitals";
 import { GameAreaManager } from "./lib/GameAreaManager";
-import { Sonar } from "./events/SonarDetect";
+import { SonarDetectorManager } from "./events/SonarDetectorManager";
 import { ms } from "./lib/Misc";
+import { SonarDetectionTypes } from "./types/enum/game";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 
@@ -15,14 +16,11 @@ root.render(
     </React.StrictMode>
 );
 
-const GameArea = GameAreaManager.getInstance();
-const sonar = new Sonar(GameArea);
+const GameArea = GameAreaManager.GetInstance();
+const SonarDetector = SonarDetectorManager.GetInstance();
 
-// this is for testing
-setInterval(() => {
-    sonar.TryDetect(200);
-}, ms(1));
+GameArea.UpdateCoordinate({ type: SonarDetectionTypes.Object, x: 30, y: 20 });
 
-sonar.on("detect", (targets) => {
-    console.log(targets);
-});
+setTimeout(() => {
+    GameArea.UpdateCoordinate({ type: SonarDetectionTypes.Unknown, x: 32, y: 5 });
+}, ms(10));

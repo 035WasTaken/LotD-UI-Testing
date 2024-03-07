@@ -59,12 +59,7 @@ export class CommandHandler {
                     if (!this.verifyType(next, type)) {
                         return `Argument '${args[i]}' is not of right type`;
                     }
-                    if (
-                        type === "boolean" &&
-                        (next === undefined ||
-                            next === "" ||
-                            next.startsWith("-"))
-                    ) {
+                    if (type === "boolean" && (next === undefined || next === "" || next.startsWith("-"))) {
                         // indexed with last element of "string" type
                         output[alias[alias.length - 1]] = true;
                     } else if (type === "boolean") {
@@ -109,13 +104,9 @@ export class CommandHandler {
         return true;
     }
     verifyType(arg: string, type: any) {
-        console.log(type);
-        console.log(arg);
-        console.log(Number(arg));
         if (type === "boolean") {
             // if it's a bool, and the next thing is also a flag or whatever, the arg is gonna be true anyway
-            if (arg === undefined || arg === "" || arg.startsWith("-"))
-                return true;
+            if (arg === undefined || arg === "" || arg.startsWith("-")) return true;
             if (arg === "true" || arg === "false") return true;
         }
         if (arg === undefined || arg === null) return false;

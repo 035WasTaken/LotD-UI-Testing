@@ -1,5 +1,6 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { Component, ReactPropTypes, useEffect, useState } from "react";
 import { GameAreaManager } from "../lib/GameAreaManager";
+import { SonarDetectorManager } from "../events/SonarDetectorManager";
 import { SonarDetectionTypes } from "../types/enum/game";
 import { ms } from "../lib/Misc";
 import * as Maths from "../util/math";
@@ -7,10 +8,10 @@ import { Vector2 } from "../lib/Vector2";
 
 import type { Unit, Ping } from "../types/interface/game";
 
-const GameArea = GameAreaManager.getInstance();
-
 export function Sonar() {
     const [pings, setPings] = useState<any[]>([]);
+    const GameArea = GameAreaManager.GetInstance();
+    const SonarDetector = SonarDetectorManager.GetInstance();
 
     function renderPings() {
         let _pings: React.ReactNode[] = [];
@@ -50,12 +51,13 @@ export function Sonar() {
     }
 
     function tryCreateNewPing() {
-        if (Maths.randomNumberInRange(30, 0) === 0) {
+        /*if (Maths.randomNumberInRange(30, 0) === 0) {
             const t = generatePingType();
             const c: Unit = {
                 x: Math.floor(Maths.randomNumberInRange(0, 100)),
                 y: Math.floor(Maths.randomNumberInRange(0, 1000)),
             };
+
             const newPing = {
                 timestamp: Date.now(),
                 type: getType(t),
@@ -65,11 +67,10 @@ export function Sonar() {
                     y: c.y,
                 },
                 angle: Maths.calcAngleToPosition(new Vector2(c.x, c.y)),
-                // ignore this for a bit
                 distance: GameArea.GetDistanceFromPlayer(c),
             };
             setPings((prevPings: any) => [...prevPings, newPing]);
-        }
+        }*/
     }
 
     /*
@@ -82,38 +83,16 @@ export function Sonar() {
         }
     */
 
-    function getType(type: SonarDetectionTypes) {
-        let result: String;
-        switch (type) {
-            case 0:
-                result = "None";
-                break;
-            case 1:
-                result = "Terrain";
-                break;
-            case 2:
-                result = "Object";
-                break;
-            case 3:
-                result = "Threat";
-                break;
-            case 4:
-                result = "Unknown";
-                break;
-            default:
-                throw TypeError("Sonar type does not exist");
-        }
-
-        return result;
-    }
-
     // Every 500ms, removes pings older than 1 minute and has a small
     // chance to generate a new ping
     useEffect(() => {
         const loop = setInterval(() => {
             removeOldPings();
-            tryCreateNewPing();
         }, ms(0.5));
+
+        SonarDetector.on("detect", (targets: Ping[]) => {
+            setPings((prevPings: any) => targets);
+        });
 
         return () => clearInterval(loop);
     }, [pings]);

@@ -13,8 +13,8 @@ export interface Vector2Data {
 
 export interface Ping {
     timestamp: number;
-    type: string;
+    type: String;
     coordinate: Unit;
-    compass: string;
+    angle: number;
     distance: number;
 }
