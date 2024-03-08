@@ -1,5 +1,4 @@
 import { Vector2 } from "../lib/Vector2";
-import { Unit } from "../types/interface/game";
 
 /**
  * @param {number} mean - The mean of the curve

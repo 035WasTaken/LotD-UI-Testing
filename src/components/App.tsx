@@ -1,4 +1,3 @@
-import React from "react";
 import "../css/App.css";
 import { Console } from "./Console";
 import { Sonar } from "./Sonar";

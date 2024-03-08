@@ -1,12 +1,10 @@
-import React, { Component, ReactPropTypes, useEffect, useState } from "react";
-import { GameAreaManager } from "../lib/GameAreaManager";
+import React, { useEffect, useState } from "react";
 import { SonarDetectorManager } from "../events/SonarDetectorManager";
-import { SonarDetectionTypes } from "../types/enum/game";
+import { GameAreaManager } from "../lib/GameAreaManager";
 import { ms } from "../lib/Misc";
 import * as Maths from "../util/math";
-import { Vector2 } from "../lib/Vector2";
 
-import type { Unit, Ping } from "../types/interface/game";
+import type { Ping } from "../types/interface/game";
 
 export function Sonar() {
     const [pings, setPings] = useState<any[]>([]);
@@ -20,21 +18,17 @@ export function Sonar() {
             const text = `${type} detected [${ping.distance.toFixed(0)}m] ${Maths.roundToDecimalPlaces(ping.angle, 2)}° at [${ping.coordinate.x}, ${
                 ping.coordinate.y
             }]`;
-            GameArea.UpdateCoordinate(ping.coordinate);
-            _pings.push(<Ping key={ping.timestamp} className={ping.type.toLowerCase()} timestamp={ping.timestamp} text={text} />);
+            //GameArea.UpdateCoordinate(ping.coordinate);
+            _pings.push(<Ping key={generateKey(ping)} className={ping.type.toLowerCase()} timestamp={ping.timestamp} text={text} />);
         });
+        // this logs twice because react renders elements twice in dev
+        console.log(_pings);
+
         return <>{_pings.map((element) => element)}</>;
     }
 
-    function generatePingType() {
-        const randomNumber = Math.random();
-        if (randomNumber < 0.5) {
-            return SonarDetectionTypes.Terrain;
-        }
-        if (randomNumber < 0.9) {
-            return SonarDetectionTypes.Object;
-        }
-        return SonarDetectionTypes.Threat;
+    function generateKey(ping: Ping): number {
+        return Number.parseInt(`${ping.coordinate.x}${ping.timestamp + Math.random() * 10000}${ping.coordinate.y}`);
     }
 
     function removeOldPings() {
@@ -48,29 +42,6 @@ export function Sonar() {
         if (elapsed > maxMs) {
             setPings((prevPings: any) => prevPings.slice(1, prevPings.length));
         }
-    }
-
-    function tryCreateNewPing() {
-        /*if (Maths.randomNumberInRange(30, 0) === 0) {
-            const t = generatePingType();
-            const c: Unit = {
-                x: Math.floor(Maths.randomNumberInRange(0, 100)),
-                y: Math.floor(Maths.randomNumberInRange(0, 1000)),
-            };
-
-            const newPing = {
-                timestamp: Date.now(),
-                type: getType(t),
-                coordinate: {
-                    type: t,
-                    x: c.x,
-                    y: c.y,
-                },
-                angle: Maths.calcAngleToPosition(new Vector2(c.x, c.y)),
-                distance: GameArea.GetDistanceFromPlayer(c),
-            };
-            setPings((prevPings: any) => [...prevPings, newPing]);
-        }*/
     }
 
     /*
@@ -90,12 +61,17 @@ export function Sonar() {
             removeOldPings();
         }, ms(0.5));
 
-        SonarDetector.on("detect", (targets: Ping[]) => {
-            setPings((prevPings: any) => targets);
-        });
+        const handler = (targets: Ping[]) => {
+            setPings((prevPings) => targets);
+        };
 
-        return () => clearInterval(loop);
-    }, [pings]);
+        SonarDetector.on("detect", handler);
+
+        return () => {
+            clearInterval(loop);
+            SonarDetector.off("detect", handler);
+        };
+    }, [pings, removeOldPings]);
 
     return (
         <div className="sonar">

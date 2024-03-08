@@ -1,5 +1,5 @@
-import { Argument, Command } from "../types/interface/commands";
 import { ParseResult } from "../types/console";
+import { Argument, Command } from "../types/interface/commands";
 
 export class CommandHandler {
     terminal;
@@ -11,13 +11,13 @@ export class CommandHandler {
     }
     /**
      * @param {number} ms - Number of milliseconds to delay by.
-     * @param {any} value - The value you want returned at the end of the delay.
-     * @returns {any}
+     * @param {T} value - The value you want returned at the end of the delay.
+     * @returns {T}
      * @static
      *
      * Delay the execution of a function or method, and then return a given value at the end.
      */
-    static delayExecutionThenReturn(ms: number, value: any) {
+    static delayExecutionThenReturn<T>(ms: number, value: T): Promise<T> {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 resolve(value);

@@ -1,11 +1,8 @@
-import { Ping } from "../types/interface/game";
-import { CommandHandler } from "./commandhandler";
 import { SonarDetectorManager } from "../events/SonarDetectorManager";
-import { Sonar } from "../components/Sonar";
-import { randomNumberWithCurveInRange, randomNumberWithCurve, randomNumberWithExpDist, randomNumberWithExpDistInRange } from "./math";
-import { Argument, GlobalCommands, CommandRunArgs } from "../types/interface/commands.js";
 import { ms } from "../lib/Misc";
-import { promises } from "fs";
+import { CommandRunArgs, GlobalCommands } from "../types/interface/commands.js";
+import { CommandHandler } from "./commandhandler";
+import { randomNumberWithCurve } from "./math";
 
 const commandHandler = new CommandHandler();
 const globalCommands: GlobalCommands = {
@@ -190,12 +187,12 @@ const globalCommands: GlobalCommands = {
             };
             setPings((prevPings: any) => [...prevPings, newPing]);
         }*/
-        run: function (args: CommandRunArgs): string {
+        run: async function (args: CommandRunArgs): Promise<string> {
             const SonarDetector = SonarDetectorManager.GetInstance();
 
             if (args.ping) {
                 const range = args.ping;
-                const results = SonarDetector.TryDetect((range as number) ?? 100); // also fires an event if anything is detected
+                const results = await SonarDetector.TryDetect((range as number) ?? 100, { delay: ms(3) }); // also fires an event if anything is detected
 
                 if (results.length < 1) {
                     return "Nothing detected within range.";

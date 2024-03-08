@@ -1,9 +1,10 @@
 import EventEmitter from "events";
 import { GameArea } from "../lib/GameArea";
 import { GameAreaManager } from "../lib/GameAreaManager";
-import type { Ping, Unit } from "../types/interface/game";
 import { Vector2 } from "../lib/Vector2";
 import { SonarDetectionTypes } from "../types/enum/game";
+import type { Ping, TryDetectOptionals, Unit } from "../types/interface/game";
+import { CommandHandler } from "../util/commandhandler";
 import * as Maths from "../util/math";
 
 export class SonarDetector extends EventEmitter {
@@ -16,7 +17,7 @@ export class SonarDetector extends EventEmitter {
         this.gameArea = GameAreaManager.GetInstance();
     }
 
-    public TryDetect(radius: number): Ping[] {
+    public async TryDetect(radius: number, { delay }: TryDetectOptionals = {}): Promise<Ping[]> {
         // if player has not moved, and there were objects detected in this position previously
         // we emit the "detect" event with those objects so as to avoid unnecessary iteration.
         // if player has not moved and there were no objects detected last time, return nothing.
@@ -30,6 +31,12 @@ export class SonarDetector extends EventEmitter {
             console.log("nothing ever");
             return;
         }*/
+
+        if (delay) {
+            await CommandHandler.delayExecutionThenReturn(delay, null);
+        }
+
+        console.log("after timer");
 
         // this definitely isn't the most efficient method, but it should be fine for our use case
         const playerPos = [this.gameArea.playerPosition.data.x, this.gameArea.playerPosition.data.y];

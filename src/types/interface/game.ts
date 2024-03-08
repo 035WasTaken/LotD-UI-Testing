@@ -18,3 +18,7 @@ export interface Ping {
     angle: number;
     distance: number;
 }
+
+export interface TryDetectOptionals {
+    delay?: number;
+}

@@ -1,15 +1,14 @@
-import React, { KeyboardEvent, useEffect, useRef, useState } from "react";
-import { CommandHandler } from "../util/commandhandler";
-import { ConsoleHandler } from "../util/consolehandler";
-import { globalCommands } from "../util/commands";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import { CommandHistory, ConsoleAnimation } from "../types/console";
+import { CommandHandler } from "../util/commandhandler";
+import { globalCommands } from "../util/commands";
+import { ConsoleHandler } from "../util/consolehandler";
 
 export function Console() {
     const [canType, setCanType] = useState(true);
     const [consoleLoading, setConsoleLoading] = useState(false);
     const [consoleHistory, setConsoleHistory] = useState("");
-    const [consoleAnimation, setConsoleAnimation] =
-        useState<ConsoleAnimation | null>(null);
+    const [consoleAnimation, setConsoleAnimation] = useState<ConsoleAnimation | null>(null);
     const [userInput, setUserInput] = useState("");
     const [commandHistory, setCommandHistory] = useState<CommandHistory>({
         commands: [],
@@ -19,28 +18,17 @@ export function Console() {
     const commandHandler = new CommandHandler();
     const consoleHandler = new ConsoleHandler();
     const consoleOutputRef = useRef<HTMLDivElement>(null);
-    const cursor = canType ? (
-        <span className="console-cursor">&#9646;</span>
-    ) : (
-        ""
-    );
-    const consoleText = canType
-        ? `${consoleHistory}\nCONSOLE> ${userInput}`
-        : consoleHistory;
+    const cursor = canType ? <span className="console-cursor">&#9646;</span> : "";
+    const consoleText = canType ? `${consoleHistory}\nCONSOLE> ${userInput}` : consoleHistory;
 
     function handleKeyPress(e: KeyboardEvent) {
         if (!canType) return;
 
-        const parsedUserInput = consoleHandler.calcUserInput(
-            userInput,
-            commandHistory,
-            e,
-            () => {
-                clearUserInput();
-                appendConsoleHistory(`CONSOLE> ${userInput}`);
-                runCommand(userInput);
-            }
-        );
+        const parsedUserInput = consoleHandler.calcUserInput(userInput, commandHistory, e, () => {
+            clearUserInput();
+            appendConsoleHistory(`CONSOLE> ${userInput}`);
+            runCommand(userInput);
+        });
         if (!parsedUserInput) return;
         setCommandHistory(parsedUserInput.newCommandHistory);
         setUserInput(parsedUserInput.newUserInput);
@@ -50,11 +38,7 @@ export function Console() {
         setUserInput("");
     }
 
-    function appendConsoleHistory(
-        text: string,
-        animated = false,
-        newLine = true
-    ) {
+    function appendConsoleHistory(text: string, animated = false, newLine = true) {
         let newConsoleText = newLine ? "\n" + text : text;
 
         if (animated) {
@@ -159,12 +143,7 @@ export function Console() {
 
     return (
         <div className="console">
-            <div
-                tabIndex={0}
-                className="console-output"
-                ref={consoleOutputRef}
-                onKeyDown={(e) => handleKeyPress(e)}
-            >
+            <div tabIndex={0} className="console-output" ref={consoleOutputRef} onKeyDown={(e) => handleKeyPress(e)}>
                 <pre>
                     {consoleText}
                     {cursor}

@@ -1,10 +1,9 @@
-import "./css/index.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./components/App";
-import reportWebVitals from "./reportWebVitals";
-import { GameAreaManager } from "./lib/GameAreaManager";
+import "./css/index.css";
 import { SonarDetectorManager } from "./events/SonarDetectorManager";
+import { GameAreaManager } from "./lib/GameAreaManager";
 import { ms } from "./lib/Misc";
 import { SonarDetectionTypes } from "./types/enum/game";
 

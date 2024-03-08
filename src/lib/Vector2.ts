@@ -1,5 +1,4 @@
-import { Vector2Data } from "../types/interface/game";
-import { Unit } from "../types/interface/game";
+import { Unit, Vector2Data } from "../types/interface/game";
 
 export class Vector2 {
     public data: Unit;

@@ -1,5 +1,5 @@
-import { SonarDetector } from "./SonarDetector";
 import { GameAreaManager } from "../lib/GameAreaManager";
+import { SonarDetector } from "./SonarDetector";
 
 // we only really want one instance of SonarDetector at any point in time, so this will facilitate that.
 export class SonarDetectorManager {
