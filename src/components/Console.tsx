@@ -7,6 +7,7 @@ import { ConsoleHandler } from "../util/consolehandler";
 export function Console() {
     const [canType, setCanType] = useState(true);
     const [consoleLoading, setConsoleLoading] = useState(false);
+    const [consoleLoadingText, setConsoleLoadingText] = useState<String | null>(null);
     const [consoleHistory, setConsoleHistory] = useState("");
     const [consoleAnimation, setConsoleAnimation] = useState<ConsoleAnimation | null>(null);
     const [userInput, setUserInput] = useState("");
@@ -19,7 +20,18 @@ export function Console() {
     const consoleHandler = new ConsoleHandler();
     const consoleOutputRef = useRef<HTMLDivElement>(null);
     const cursor = canType ? <span className="console-cursor">&#9646;</span> : "";
-    const consoleText = canType ? `${consoleHistory}\nCONSOLE> ${userInput}` : consoleHistory;
+
+    function renderConsoleText() {
+        let text = consoleHistory;
+        if (consoleLoadingText != null) {
+            text += "\n" + consoleLoadingText;
+        }
+        if (canType) {
+            text += `\nCONSOLE> ${userInput}`;
+        }
+
+        return text;
+    }
 
     function handleKeyPress(e: KeyboardEvent) {
         if (!canType) return;
@@ -85,7 +97,7 @@ export function Console() {
             const { current } = consoleOutputRef;
             current.scrollTop = current.scrollHeight;
         }
-    }, [consoleHistory, canType]);
+    }, [consoleHistory, canType, consoleLoadingText]);
 
     // Console Animation Handler thingy whatever the fuck
     useEffect(() => {
@@ -126,17 +138,22 @@ export function Console() {
 
     // Displays animation while the console is loading
     useEffect(() => {
+        const loadingChars = ["—", "\\", "|", "/"];
+
         if (!consoleLoading) {
+            setConsoleLoadingText(null);
             return;
         }
 
-        // adds a dot each second
-        let dots = 1;
+        let char = 0;
         const loading = setInterval(() => {
-            if (dots === 1) appendConsoleHistory("Working.");
-            appendConsoleHistory(".", false, false);
-            dots++;
-        }, 1000);
+            setConsoleLoadingText(`Executing command...  ${loadingChars[char]}`);
+            char++;
+
+            if (char >= loadingChars.length) {
+                char = 0;
+            }
+        }, 120);
 
         return () => clearInterval(loading);
     }, [consoleLoading]);
@@ -145,7 +162,7 @@ export function Console() {
         <div className="console">
             <div tabIndex={0} className="console-output" ref={consoleOutputRef} onKeyDown={(e) => handleKeyPress(e)}>
                 <pre>
-                    {consoleText}
+                    {renderConsoleText()}
                     {cursor}
                 </pre>
             </div>
