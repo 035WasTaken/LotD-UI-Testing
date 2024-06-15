@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { SonarDetectorManager } from "../events/SonarDetectorManager";
-import { GameAreaManager } from "../lib/GameAreaManager";
+import { GameAreaManager } from "../lib/game/GameAreaManager";
 import { ms } from "../lib/Misc";
 import * as Maths from "../util/math";
 
@@ -21,8 +21,6 @@ export function Sonar() {
             //GameArea.UpdateCoordinate(ping.coordinate);
             _pings.push(<Ping key={generateKey(ping)} className={ping.type.toLowerCase()} timestamp={ping.timestamp} text={text} />);
         });
-        // this logs twice because react renders elements twice in dev
-        console.log(_pings);
 
         return <>{_pings.map((element) => element)}</>;
     }

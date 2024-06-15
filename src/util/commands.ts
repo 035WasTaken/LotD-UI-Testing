@@ -121,16 +121,16 @@ const globalCommands: GlobalCommands = {
     },
 
     throttle: {
-        description: "Makes engine go brrr (may take a second to spool up or down)",
+        description: "Makes engine go brrr (will take time to spool up or down)",
         arguments: [
             {
-                alias: ["f", "full"],
+                alias: ["f", "100", "full"],
                 required: false,
                 type: "boolean",
                 usage: "Shorthand for 100% throttle",
             },
             {
-                alias: ["s", "stop"],
+                alias: ["0", "stop"],
                 required: false,
                 type: "boolean",
                 usage: "Shorthand for 0% throttle (stops the throttle)",
@@ -139,21 +139,23 @@ const globalCommands: GlobalCommands = {
                 alias: ["s", "set"],
                 required: false,
                 type: "number",
-                usage: "Sets the throttle to the % specified, capped to the interval [0, 100] (e.g. '--set 12' => 12% throttle)",
+                usage: "Sets the throttle to the % specified, capped to the interval [-100, 100] (e.g. '--set 12' => 12% throttle)",
             },
         ],
         run: async function (args: CommandRunArgs): Promise<string> {
-            const delay = 2000;
             if (args.full) {
-                return (await CommandHandler.delayExecutionThenReturn(delay, "FULLL THROTTLER BSABYYYYY")) as string;
+                await commandHandler.setThrottle(100, "x");
+                return (await CommandHandler.delayExecutionThenReturn(0, "FULLL THROTTLER BSABYYYYY")) as string;
             }
             if (args.stop) {
-                return (await CommandHandler.delayExecutionThenReturn(delay, "what a pussy. the engine is stopped, but out of spite.")) as string;
+                await commandHandler.setThrottle(0, "x");
+                return (await CommandHandler.delayExecutionThenReturn(0, "what a pussy. the engine is stopped, but out of spite.")) as string;
             }
             if (args.set) {
-                return (await CommandHandler.delayExecutionThenReturn(delay, `Throttle set to ${args.set}%.`)) as string;
+                await commandHandler.setThrottle(args.set as number, "x");
+                return (await CommandHandler.delayExecutionThenReturn(0, `Throttle set to ${args.set}%.`)) as string;
             }
-            return (await CommandHandler.delayExecutionThenReturn(0, "IDFK what the throttle is set to LOL")) as string;
+            return (await CommandHandler.delayExecutionThenReturn(0, `Throttle is set to ${commandHandler.getThrottle("x")}`)) as string;
         },
     },
 

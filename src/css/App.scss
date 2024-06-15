@@ -1,3 +1,13 @@
+@font-face {
+    font-family: NotJam;
+    src: url(fonts/Not\ Jam\ Laika\ 11.ttf);
+}
+
+@font-face {
+    font-family: NotJam;
+    src: url(fonts/NotJamSciMono10.ttf);
+}
+
 // .App {
 //   text-align: center;
 // }
@@ -41,6 +51,7 @@ body {
     margin: 0;
     padding: 0;
     height: 100vh;
+    font-family: NotJam;
 }
 
 .box-container {
@@ -78,13 +89,12 @@ body {
     position: relative;
 }
 
-.box1 {
+.messages {
     background-color: #fff;
     box-sizing: border-box;
     flex: 1.4;
     margin: 5px;
     display: flex;
-    align-items: center;
     justify-content: center;
     position: relative;
 }
@@ -92,17 +102,21 @@ body {
 .box2 {
     background-color: #fff;
     box-sizing: border-box;
-    flex: 1;
+    flex: 0.9;
     margin: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
+    padding: 1em;
+    h1 {
+        margin: 0;
+    }
+    p {
+        margin: 0;
+        padding: 0;
+    }
 }
 
 .console {
     background-color: #000;
-    font-family: "Roboto Mono", monospace;
+    // font-family: "Roboto Mono", monospace;
     box-sizing: border-box;
     color: #fff;
     flex: 1.6;
@@ -112,7 +126,7 @@ body {
 }
 
 .sonar {
-    font-family: "Roboto Mono", monospace;
+    // font-family: "Roboto Mono", monospace;
     color: yellow;
     background-color: #07270c;
     box-sizing: border-box;

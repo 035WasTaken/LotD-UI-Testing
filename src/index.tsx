@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./components/App";
 import "./css/index.css";
 import { SonarDetectorManager } from "./events/SonarDetectorManager";
-import { GameAreaManager } from "./lib/GameAreaManager";
+import { GameAreaManager } from "./lib/game/GameAreaManager";
 import { ms } from "./lib/Misc";
 import { SonarDetectionTypes } from "./types/enum/game";
 

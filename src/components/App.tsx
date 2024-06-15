@@ -1,13 +1,16 @@
+import { useState } from "react";
 import "../css/App.css";
+import { PlayerController } from "../lib/game/player/PlayerController";
 import { Console } from "./Console";
+import PlayerControllerStatus from "./PlayerControllerStatus";
 import { Sonar } from "./Sonar";
 
 function App() {
     return (
         <div className="box-container App">
             <div className="box-top">
-                <Box1 />
-                <Box2 />
+                <Messages />
+                <PlayerControllerStatus />
             </div>
             <div className="box-bottom">
                 <Console />
@@ -17,10 +20,10 @@ function App() {
     );
 }
 
-function Box1() {
+function Messages() {
     return (
-        <div className="box1">
-            <h1>Box 1</h1>
+        <div className="messages">
+            <h2>Incoming Messages</h2>
         </div>
     );
 }

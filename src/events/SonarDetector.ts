@@ -1,6 +1,6 @@
 import EventEmitter from "events";
-import { GameArea } from "../lib/GameArea";
-import { GameAreaManager } from "../lib/GameAreaManager";
+import { GameArea } from "../lib/game/GameArea";
+import { GameAreaManager } from "../lib/game/GameAreaManager";
 import { Vector2 } from "../lib/Vector2";
 import { SonarDetectionTypes } from "../types/enum/game";
 import type { Ping, TryDetectOptionals, Unit } from "../types/interface/game";
@@ -59,8 +59,6 @@ export class SonarDetector extends EventEmitter {
                     const type = this.gameArea.GetCoordinateType(coordinate);
                     const angle = Maths.calcAngleToPosition(new Vector2(coordinate.x, coordinate.y));
                     const distance = this.gameArea.GetDistanceFromPlayer(coordinate);
-
-                    console.log(distance);
 
                     const ping = {
                         timestamp,

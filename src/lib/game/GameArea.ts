@@ -1,6 +1,6 @@
-import { SonarDetectionTypes } from "../types/enum/game";
-import { Unit } from "../types/interface/game";
-import { Vector2 } from "./Vector2";
+import { SonarDetectionTypes } from "../../types/enum/game";
+import { Unit } from "../../types/interface/game";
+import { Vector2 } from "../Vector2";
 
 export class GameArea {
     width: number;
@@ -15,10 +15,6 @@ export class GameArea {
         this.Initialize();
     }
 
-    // the fun part is going to be updating this constantly without causing lag
-    // i'll probably initialize this with GameObjects at some point in the future
-    // but i'd like to optimize it before then, because as of right now it takes
-    // ~16ms to execute this as it is. let alone adding more data.
     /**
      * @returns Initialized GameArea
      * @description Sets up GameArea.grid to be used

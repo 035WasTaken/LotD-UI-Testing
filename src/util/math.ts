@@ -95,3 +95,10 @@ export function roundToDecimalPlaces(num: number, decimalPlaces: number) {
     num /= 10 ** decimalPlaces;
     return num;
 }
+
+/**
+ * Calculates the hypotenuse given sides x and y of a triangle
+ */
+export function calculateHyp(x: number, y: number) {
+    return Math.sqrt(x ** 2 + y ** 2);
+}

@@ -1,9 +1,14 @@
+import { Dispatch } from "react";
+import { PlayerController } from "../lib/game/player/PlayerController";
 import { ParseResult } from "../types/console";
 import { Argument, Command } from "../types/interface/commands";
+import { PlayerControllerManager } from "../lib/game/player/PlayerControllerManager";
 
 export class CommandHandler {
     terminal;
+    playerController = PlayerControllerManager.GetInstance();
     /**
+     * @param
      * @param {Object} terminal - The terminal object to use
      */
     constructor(terminal: any = {}) {
@@ -17,7 +22,7 @@ export class CommandHandler {
      *
      * Delay the execution of a function or method, and then return a given value at the end.
      */
-    static delayExecutionThenReturn<T>(ms: number, value: T): Promise<T> {
+    static delayExecutionThenReturn<T>(ms: number, value: T, cancellable = false): Promise<T> {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 resolve(value);
@@ -153,5 +158,40 @@ export class CommandHandler {
             output += `\nThis command has additional options available:\n${optionalArgs}`;
         }
         return output;
+    }
+
+    // slowly increases/decreases throttle to new value
+    setThrottle(newThrottle: number, axis: "x" | "y") {
+        return new Promise((resolve) => {
+            const throttleRate = 0.1; // 10% per second
+
+            let prevTime = Date.now(); // to account for overhead of setTimeout
+            newThrottle /= 100; // convert from % to decimal
+            const loopUntilThrottleDone = () => {
+                // arrow function so this.playerController still works
+                const current = this.playerController.throttle.data[axis];
+                const difference = Math.abs(newThrottle - current);
+                if (difference < 0.05) {
+                    this.playerController.throttle.data[axis] = newThrottle;
+                    resolve;
+                }
+
+                setTimeout(() => {
+                    const now = Date.now();
+                    if (current < newThrottle) {
+                        this.playerController.throttle.data[axis] += throttleRate * (now - prevTime);
+                    } else {
+                        this.playerController.throttle.data[axis] -= throttleRate * (now - prevTime);
+                    }
+                    this.playerController.velocity.data[axis] = this.playerController.throttle.data[axis] * 5; // max velocity of 5.0m/s
+                    prevTime = now;
+                    return loopUntilThrottleDone();
+                }, 50);
+            };
+        });
+    }
+
+    getThrottle(axis: "x" | "y") {
+        return this.playerController.throttle.data[axis];
     }
 }

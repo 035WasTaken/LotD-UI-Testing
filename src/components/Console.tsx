@@ -1,8 +1,9 @@
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
-import { CommandHistory, ConsoleAnimation } from "../types/console";
+import { CommandHistory, ConsoleAnimation, IConsole } from "../types/console";
 import { CommandHandler } from "../util/commandhandler";
 import { globalCommands } from "../util/commands";
 import { ConsoleHandler } from "../util/consolehandler";
+import { PlayerController } from "../lib/game/player/PlayerController";
 
 export function Console() {
     const [canType, setCanType] = useState(true);

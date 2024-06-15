@@ -1,3 +1,6 @@
+import { PlayerController } from "../lib/game/player/PlayerController";
+import { Dispatch } from "react";
+
 export type ParsedArgs = {
     [key: string]: boolean | number | string;
 };
@@ -20,3 +23,8 @@ export type ConsoleAnimation = {
     speed: number;
     text: string;
 };
+
+export interface IConsole {
+    playerController: PlayerController;
+    setPlayerController: Dispatch<PlayerController>;
+}
